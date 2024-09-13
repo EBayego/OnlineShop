@@ -21,4 +21,4 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   data:
     mongodb:
-      uri: mongodb://localhost:27017/OnlineShop
+      uri: mongodb://localhost:27017/product_db

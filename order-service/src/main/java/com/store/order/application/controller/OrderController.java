@@ -1,4 +1,4 @@
-package com.store.order.adapter.in.api;
+package com.store.order.application.controller;
 
 import com.store.order.adapter.out.messaging.OrderEventProducer;
 import com.store.order.application.service.OrderService;

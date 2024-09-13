@@ -1,4 +1,4 @@
-package com.store.order.adapter.out.persistence;
+package com.store.order.application.persistence;
 
 import com.store.order.domain.model.Order;
 import com.store.order.domain.repository.OrderRepository;
