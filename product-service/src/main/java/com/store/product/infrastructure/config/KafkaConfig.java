@@ -1,4 +1,4 @@
-package com.store.order.infrastructure.configuration;
+package com.store.product.infrastructure.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;

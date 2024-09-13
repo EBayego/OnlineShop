@@ -1,4 +1,4 @@
-package com.store.order.adapter.out.messaging;
+package com.store.product.adapter.out.messaging;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 @Component
 @Service
-public class OrderEventProducer {
+public class ProductEventProducer {
 	
 	@Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendOrderMsg(String ordermsg) {
+    public void sendProductMsg(String ordermsg) {
         this.kafkaTemplate.send("order-events", ordermsg);
     }
 }

@@ -1,4 +1,4 @@
-package com.store.order.infrastructure.configuration;
+package com.store.product.infrastructure.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;

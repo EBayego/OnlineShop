@@ -19,11 +19,8 @@ import java.util.Optional;
 @Tag(name = "Pedidos", description = "API para gestionar pedidos")
 public class OrderController {
 
-   private final OrderEventProducer producer;
-
-   OrderController(OrderEventProducer producer) {
-       this.producer = producer;
-   }
+	@Autowired
+	private OrderEventProducer producer;
 
     @Autowired
     private OrderService orderService;

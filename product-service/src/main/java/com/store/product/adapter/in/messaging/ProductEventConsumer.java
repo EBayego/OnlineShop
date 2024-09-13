@@ -1,4 +1,4 @@
-package com.store.order.adapter.in.messaging;
+package com.store.product.adapter.in.messaging;
 import java.io.IOException;
 
 import org.springframework.kafka.annotation.KafkaListener;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Component
 @Service
-public class OrderEventConsumer {
+public class ProductEventConsumer {
 
     @KafkaListener(topics = "order-events", groupId = "order_group")
     public void consumeOrderEvent(String order) throws IOException {
