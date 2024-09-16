@@ -1,20 +1,25 @@
-FROM maven:3.8.6-openjdk-21 AS build
+FROM openjdk:21-jdk-bullseye
 
-WORKDIR /app
+# Instala Maven manualmente
+ARG MAVEN_VERSION=3.8.6
+ARG USER_HOME_DIR="/root"
+ARG MAVEN_SHA=fcb2cda9163991b12028d2480b9e60105190eda9
+ARG BASE_URL=https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries
 
-COPY pom.xml .
-RUN mvn dependency:go-offline
+RUN apt-get update && apt-get install -y curl tar \
+  && curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+  && echo "${MAVEN_SHA}  /tmp/apache-maven.tar.gz" | sha1sum -c - \
+  && tar -xzf /tmp/apache-maven.tar.gz -C /opt \
+  && ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven \
+  && rm /tmp/apache-maven.tar.gz \
+  && apt-get clean
 
-COPY src ./src
+ENV MAVEN_HOME /opt/maven
+ENV PATH $MAVEN_HOME/bin:$PATH
 
-RUN mvn clean package -DskipTests
+COPY . /usr/src/app/customer-service
+WORKDIR /usr/src/app/customer-service
 
-FROM openjdk:21-jdk
+RUN mvn clean package
 
-WORKDIR /app
-
-COPY --from=build /app/target/customer-service.jar /app/customer-service.jar
-
-EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "/app/customer-service.jar"]
+CMD ["java", "-jar", "target/customer-service.jar"]

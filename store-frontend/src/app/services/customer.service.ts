@@ -1,18 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { Customer } from '../models/customer';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
+  private apiUrl = 'http://localhost:8082/customers'; // URL del backend de microservicios
 
-  private apiUrl = environment.apiUrls.customerService;
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
+  getCustomers(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(this.apiUrl);
+  }
 
-  createCustomer(customerData: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, customerData);
+  getCustomerById(id: number): Observable<Customer> {
+    return this.http.get<Customer>(`${this.apiUrl}/${id}`);
+  }
+
+  createCustomer(customer: Customer): Observable<Customer> {
+    return this.http.post<Customer>(this.apiUrl, customer);
+  }
+
+  updateCustomerStatus(id: number, status: string): Observable<Customer> {
+    return this.http.put<Customer>(`${this.apiUrl}/${id}/status`, status);
+  }
+
+  deleteCustomer(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

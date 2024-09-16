@@ -1,28 +1,13 @@
-<div class="container">
-    <h2>Your Cart</h2>
-    <div *ngIf="cartItems.length === 0">
-      <p>Your cart is empty.</p>
-    </div>
-    <div *ngIf="cartItems.length > 0">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of cartItems; let i = index">
-            <td>{{ item.name }}</td>
-            <td>{{ item.price }} USD</td>
-            <td>
-              <button class="btn btn-danger" (click)="removeFromCart(i)">Remove</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <h3>Total: {{ getTotal() }} USD</h3>
-      <button class="btn btn-success">Proceed to Checkout</button>
-    </div>
-  </div>  
+<h2>Carrito de Compras</h2>
+<div *ngIf="cartItems.length > 0; else emptyCart">
+  <div *ngFor="let product of cartItems">
+    <h3>{{ product.name }}</h3>
+    <p>Precio: {{ product.price }}€</p>
+    <button (click)="removeItem(product)">Eliminar del carrito</button>
+  </div>
+  <button (click)="purchase()">Comprar</button>
+</div>
+
+<ng-template #emptyCart>
+  <p>El carrito está vacío</p>
+</ng-template>

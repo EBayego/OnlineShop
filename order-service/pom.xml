@@ -9,12 +9,14 @@
 		<groupId>com.store</groupId>
 		<artifactId>online-shop</artifactId>
 		<version>1.0.0</version>
+		<relativePath/>
 	</parent>
 	
 	<name>order</name>
 	<description>Order Service para la gestión de pedidos.</description>
 
 	<build>
+		<finalName>order-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
