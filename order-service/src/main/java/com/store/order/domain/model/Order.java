@@ -20,7 +20,8 @@ public class Order {
     private Long id;
     
     @NotNull
-    private String customerId;
+    @Column(name = "customer_id", nullable = false)
+    private Long customerId;
     
     @NotNull
     private String status;

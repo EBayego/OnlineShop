@@ -18,15 +18,6 @@ pipeline {
                         }
                     }
                 }
-				
-				stage('Build Inventory-Service') {
-                    steps {
-                        dir('inventory-service') {
-                            sh 'mvn clean package'
-                            sh 'docker build -t ebayego/inventory-service:latest .'
-                        }
-                    }
-                }
 
                 stage('Build Order-Service') {
                     steps {
@@ -53,14 +44,6 @@ pipeline {
                 stage('Test Customer-Service') {
                     steps {
                         dir('customer-service') {
-                            sh 'mvn test'
-                        }
-                    }
-                }
-
-                stage('Test Inventory-Service') {
-                    steps {
-                        dir('inventory-service') {
                             sh 'mvn test'
                         }
                     }
