@@ -17,6 +17,10 @@ export class CartService {
     return this.cartItems;
   }
 
+  getCartItemCount(): number {
+    return this.cartItems.length;
+  }
+
   removeFromCart(product: Product): void {
     const index = this.cartItems.findIndex(item => item.id === product.id);
     if (index !== -1) {
