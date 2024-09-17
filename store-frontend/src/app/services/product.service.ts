@@ -30,4 +30,8 @@ export class ProductService {
   deleteProduct(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  updateProductStock(productId: string, newStock: number): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/${productId}/stock`, { stock: newStock });
+  }
 }

@@ -1,62 +1,56 @@
 package com.store.customer;
 
 import com.store.customer.application.service.CustomerService;
+import com.store.customer.domain.exceptions.CustomerNotFoundException;
 import com.store.customer.domain.model.Customer;
 import com.store.customer.domain.repository.CustomerRepository;
-import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.time.LocalDate;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class CustomerServiceTest {
 
-    @InjectMocks
+    @Autowired
     private CustomerService customerService;
 
-    @Mock
+    @MockBean
     private CustomerRepository customerRepository;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    public void testCreateCustomer() {
-        // Arrange
-        Customer customer = new Customer();
+    public void testCreateCustomerSuccess() {
+        Customer customer = new Customer(1L, "user1", "user1@example.com", LocalDate.of(1990, 1, 1));
+        Mockito.when(customerRepository.save(Mockito.any(Customer.class))).thenReturn(customer);
 
-        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
-
-        // Act
         Customer createdCustomer = customerService.createCustomer(customer);
-
-        // Assert
-        verify(customerRepository, times(1)).save(customer);
+        Assertions.assertEquals("user1", createdCustomer.getUsername());
+        Assertions.assertEquals("user1@example.com", createdCustomer.getEmail());
     }
 
     @Test
-    public void testUpdateCustomerStatus() {
-        // Arrange
-        Customer customer = new Customer();
-        customer.setId(1L);
+    public void testGetCustomerByIdNotFound() {
+        Long customerId = 1L;
+        Mockito.when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
 
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+        Assertions.assertThrows(CustomerNotFoundException.class, () -> {
+            customerService.getCustomerById(customerId);
+        });
+    }
 
-        // Act
-        Customer updatedCustomer = customerService.updateCustomerStatus(1L, "SHIPPED");
+    @Test
+    public void testUpdateCustomerStatusSuccess() {
+        Customer customer = new Customer(1L, "user1", "user1@example.com", LocalDate.of(1990, 1, 1));
+        Mockito.when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+        Mockito.when(customerRepository.save(customer)).thenReturn(customer);
 
-        // Assert
-        verify(customerRepository, times(1)).save(customer);
+        Customer updatedCustomer = customerService.updateCustomerInfo(1L, "userUpdated", "ACTIVE", null);
+        Assertions.assertEquals("user1", updatedCustomer.getUsername());
     }
 }

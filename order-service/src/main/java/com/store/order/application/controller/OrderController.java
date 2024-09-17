@@ -2,17 +2,18 @@ package com.store.order.application.controller;
 
 import com.store.order.adapter.out.messaging.OrderEventProducer;
 import com.store.order.application.service.OrderService;
+import com.store.order.domain.exceptions.OrderNotFoundException;
 import com.store.order.domain.model.Order;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
@@ -35,8 +36,11 @@ public class OrderController {
     @Operation(summary = "Obtener un pedido por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
-        Optional<Order> order = orderService.getOrderById(id);
-        return order.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        Order order = orderService.getOrderById(id);
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(order);
     }
 
     @Operation(summary = "Listar todos los pedidos")
@@ -48,8 +52,13 @@ public class OrderController {
 
     @Operation(summary = "Actualizar el estado de un pedido")
     @PutMapping("/{orderId}/status")
-    public Order updateOrderStatus(@PathVariable Long orderId, @RequestBody String status) { //@RequestParam para la url
-        return orderService.updateOrderStatus(orderId, status);
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long orderId, @RequestParam String status) {
+        try {
+            Order updatedOrder = orderService.updateOrderStatus(orderId, status);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (OrderNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @Operation(summary = "Eliminar un pedido por su ID")

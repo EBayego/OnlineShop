@@ -1,6 +1,12 @@
 <nav>
   <a routerLink="/">Productos</a> |
   <a routerLink="/cart">Carrito</a>
+  <div class="cart-icon">
+    <a routerLink="/cart">
+      🛒
+      <span class="cart-count">{{ cartService.getCartItemCount() }}</span>
+    </a>
+  </div>
 </nav>
 
 <router-outlet></router-outlet>

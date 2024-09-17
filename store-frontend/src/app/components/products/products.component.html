@@ -1,8 +1,19 @@
-<h2>Productos Disponibles</h2>
-<div *ngFor="let product of products" class="product-item">
-  <h3>{{ product.name }}</h3>
-  <p>{{ product.description }}</p>
-  <p>Precio: {{ product.price }}€</p>
-  <p>Stock: {{ product.stock }}</p>
-  <button (click)="addToCart(product)" [disabled]="product.stock === 0">Añadir al carrito</button>
+<div class="container mt-4">
+  <h1 class="text-center">Tienda de Productos</h1>
+  <div class="row">
+    <div class="col-md-4" *ngFor="let product of products">
+      <div class="card h-100">
+        <img src="https://via.placeholder.com/150" class="card-img-top" alt="{{ product.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">{{ product.description }}</p>
+          <p class="card-text"><strong>{{ product.price | currency }}</strong></p>
+          <p class="card-text">Stock: {{ product.stock }}</p>
+          <button (click)="addToCart(product)" [disabled]="product.stock === 0" class="btn btn-primary">
+            Añadir al carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
