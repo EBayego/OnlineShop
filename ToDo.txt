@@ -1,5 +1,5 @@
-Exceptions for Order and Product
-Configure OpenAPI for all services
+Añadir a los pedidos un contador de productos
+
 Add a better looking view for the frontend
 Make the add to cart function
 Enable purchasing products, deleting them from the stock

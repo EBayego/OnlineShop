@@ -1,66 +1,55 @@
 package com.store.order;
 
 import com.store.order.application.service.OrderService;
+import com.store.order.domain.exceptions.OrderNotFoundException;
 import com.store.order.domain.model.Order;
 import com.store.order.domain.repository.OrderRepository;
-import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class OrderServiceTest {
 
-    @InjectMocks
+    @Autowired
     private OrderService orderService;
 
-    @Mock
+    @MockBean
     private OrderRepository orderRepository;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    public void testCreateOrder() {
-        // Arrange
-        Order order = new Order();
-        order.setStatus("CREATED");
+    public void testCreateOrderSuccess() {
+        Order order = new Order(1L, 1L, "CREATED", List.of(1L, 2L));
+        Mockito.when(orderRepository.save(Mockito.any(Order.class))).thenReturn(order);
 
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
-
-        // Act
         Order createdOrder = orderService.createOrder(order);
-
-        // Assert
-        assertEquals("CREATED", createdOrder.getStatus());
-        verify(orderRepository, times(1)).save(order);
+        Assertions.assertEquals("CREATED", createdOrder.getStatus());
     }
 
     @Test
-    public void testUpdateOrderStatus() {
-        // Arrange
-        Order order = new Order();
-        order.setId(1L);
-        order.setStatus("CREATED");
+    public void testGetOrderByIdNotFound() {
+        Long orderId = 1L;
+        Mockito.when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
-        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
-        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        Assertions.assertThrows(OrderNotFoundException.class, () -> {
+            orderService.getOrderById(orderId);
+        });
+    }
 
-        // Act
+    @Test
+    public void testUpdateOrderStatusSuccess() {
+        Order order = new Order(1L, 1L, "CREATED", List.of(1L, 2L));
+        Mockito.when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        Mockito.when(orderRepository.save(order)).thenReturn(order);
+
         Order updatedOrder = orderService.updateOrderStatus(1L, "SHIPPED");
-
-        // Assert
-        assertEquals("SHIPPED", updatedOrder.getStatus());
-        verify(orderRepository, times(1)).save(order);
+        Assertions.assertEquals("SHIPPED", updatedOrder.getStatus());
     }
 }
