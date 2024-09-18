@@ -3,6 +3,7 @@ package com.store.order;
 import com.store.order.application.service.OrderService;
 import com.store.order.domain.exceptions.OrderNotFoundException;
 import com.store.order.domain.model.Order;
+import com.store.order.domain.model.OrderItem;
 import com.store.order.domain.repository.OrderRepository;
 
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +27,8 @@ public class OrderServiceTest {
 
     @Test
     public void testCreateOrderSuccess() {
-        Order order = new Order(1L, 1L, "CREATED", List.of(1L, 2L));
+    	List<OrderItem> orderItems = List.of(new OrderItem("1", 20), new OrderItem("2", 20));
+        Order order = new Order(1L, 1L, "CREATED", orderItems);
         Mockito.when(orderRepository.save(Mockito.any(Order.class))).thenReturn(order);
 
         Order createdOrder = orderService.createOrder(order);
@@ -45,7 +47,8 @@ public class OrderServiceTest {
 
     @Test
     public void testUpdateOrderStatusSuccess() {
-        Order order = new Order(1L, 1L, "CREATED", List.of(1L, 2L));
+    	List<OrderItem> orderItems = List.of(new OrderItem("1", 20), new OrderItem("2", 20));
+        Order order = new Order(1L, 1L, "CREATED", orderItems);
         Mockito.when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         Mockito.when(orderRepository.save(order)).thenReturn(order);
 

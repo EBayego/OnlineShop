@@ -12,7 +12,7 @@ public class ProductEventProducer {
 	@Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendProductMsg(String ordermsg) {
-        this.kafkaTemplate.send("order-events", ordermsg);
+    public void sendProductMsg(String msg) {
+        this.kafkaTemplate.send("product-events", msg);
     }
 }

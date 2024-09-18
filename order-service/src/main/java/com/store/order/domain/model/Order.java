@@ -28,7 +28,6 @@ public class Order {
     
     @ElementCollection
     @CollectionTable(name = "order_product_ids", joinColumns = @JoinColumn(name = "order_id"))
-    @Column(name = "product_id")
-    private List<Long> productosId = new ArrayList<>();
+    private List<OrderItem> orderItems = new ArrayList<>();
 	
 }

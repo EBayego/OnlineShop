@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.store.order.application.service.OrderService;
 import com.store.order.domain.exceptions.OrderNotFoundException;
 import com.store.order.domain.model.Order;
+import com.store.order.domain.model.OrderItem;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,7 +43,8 @@ public class OrderControllerTest {
 
     @Test
     public void testCreateOrderSuccess() throws Exception {
-        Order order = new Order(1L, 1L, "CREATED", List.of(1L, 2L));
+    	List<OrderItem> orderItems = List.of(new OrderItem("1", 20), new OrderItem("2", 20));
+        Order order = new Order(1L, 1L, "CREATED", orderItems);
         Mockito.when(orderService.createOrder(Mockito.any(Order.class))).thenReturn(order);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/orders")

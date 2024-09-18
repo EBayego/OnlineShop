@@ -30,7 +30,7 @@ public class KafkaConfig {
 
 	@Bean
     public NewTopic orderTopic() {
-        return TopicBuilder.name("order-events").build();
+        return TopicBuilder.name("customer-events").build();
     }
 
     @Bean
