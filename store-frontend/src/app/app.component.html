@@ -1,11 +1,12 @@
 <nav>
-  <a routerLink="/">Productos</a> |
-  <a routerLink="/cart">Carrito</a>
+  <div (click)="goToHome()" class="logo">
+    <img src="logo/logo.png" alt="Logo de la tienda" class="logo-image">
+  </div>
   <div class="cart-icon">
-    <a routerLink="/cart">
+    <button (click)="goToCart()" class="cart-link">
       🛒
       <span class="cart-count">{{ cartService.getCartItemCount() }}</span>
-    </a>
+    </button>
   </div>
 </nav>
 
