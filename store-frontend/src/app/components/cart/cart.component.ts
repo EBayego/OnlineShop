@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./cart.component.scss']
 })
 export class CartComponent implements OnInit {
-  cartItems: Product[] = [];
+  cartItems: { product: Product, quantity: number }[] = [];
   totalPrice: number = 0;
 
   constructor(private cartService: CartService, private orderService: OrderService) {}
@@ -23,28 +23,61 @@ export class CartComponent implements OnInit {
   }
 
   calculateTotalPrice(): void {
-    this.totalPrice = this.cartItems.reduce((acc, item) => acc + item.price, 0);
+    this.totalPrice = this.cartItems.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
+  }
+
+  increaseQuantity(product: Product): void {
+    this.cartService.addToCart(product);
+    this.cartItems = this.cartService.getCartItems(); // Actualiza los items del carrito
+    this.calculateTotalPrice(); // Recalcula el precio total
+  }
+
+  decreaseQuantity(product: Product): void {
+    this.cartService.removeFromCart(product);
+    this.cartItems = this.cartService.getCartItems(); // Actualiza los items del carrito
+    this.calculateTotalPrice(); // Recalcula el precio total
+  }
+
+  removeItem(product: Product): void {
+    const itemIndex = this.cartItems.findIndex(item => item.product.id === product.id);
+    this.cartItems.splice(itemIndex, 1); // Elimina directamente el producto
+    this.cartService.removeFromCart(product);
+    this.calculateTotalPrice(); // Recalcula el precio total después de eliminar un producto
   }
 
   purchase(): void {
     const customerId = 1; // ID de cliente, puede ser dinámico en una app real
-    const productosId = this.cartItems.map(item => item.id);
-  
-    // Crea una orden
-    this.orderService.createOrder({ customerId, productosId, status: 'CREATED' }).subscribe(() => {
-      this.cartItems.forEach(item => {
-        // Actualiza el stock de cada producto
-        item.stock = Math.max(0, item.stock - 1); // Asegurarse de no tener stock negativo
-      });
-      this.cartService.clearCart(); // Vacía el carrito después de la compra
-      this.calculateTotalPrice(); // Recalcula el precio total tras la compra
-      alert('Compra realizada con éxito');
-    });
-  }  
+    
+    const orderItems = this.cartItems.map(item => ({
+      productId: item.product.id,
+      quantity: item.quantity
+    }));
 
-  removeItem(product: Product): void {
-    this.cartService.removeFromCart(product);
-    this.cartItems = this.cartService.getCartItems(); // Actualiza los items del carrito
-    this.calculateTotalPrice(); // Recalcula el precio total después de eliminar un producto
+    console.log("orderItems: " + orderItems);
+
+    const order = {
+      customerId: customerId,
+      status: 'CREATED',
+      orderItems: orderItems
+    };
+
+    console.log("order: " + order);
+
+    this.orderService.createOrder(order).subscribe({
+      next: () => {
+        console.log("createOrder.subscribe: ");
+        this.cartItems.forEach(item => {
+          item.product.stock = Math.max(0, item.product.stock - item.quantity);
+        });
+        this.cartService.clearCart(); // Vacía el carrito después de la compra
+        this.calculateTotalPrice(); // Recalcula el precio total tras la compra
+        alert('Compra realizada con éxito');
+        window.location.reload();
+      },
+      error: (err) => {
+        console.error('Error en el proceso de compra:', err);
+        alert('Error al procesar la compra');
+      }
+    });
   }
 }

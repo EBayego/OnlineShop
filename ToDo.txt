@@ -1,5 +1,5 @@
-Añadir a los pedidos un contador de productos
+Make Login system
+Add spring security
+Configure Jenkins and Sonar
 
-Add a better looking view for the frontend
-Make the add to cart function
-Enable purchasing products, deleting them from the stock
+Docker & Kubernetes
