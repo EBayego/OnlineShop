@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderEventConsumer {
 
-    @KafkaListener(topics = "order-events", groupId = "order_group")
-    public void consumeOrderEvent(String order) throws IOException {
-        System.out.println("Recibido evento de pedido: " + order);
-    }
+    //@KafkaListener(topics = "order-events", groupId = "order_group")
+    //public void consumeOrderEvent(String order) throws IOException {
+    //    System.out.println("Recibido evento de pedido: " + order);
+    //}
 }

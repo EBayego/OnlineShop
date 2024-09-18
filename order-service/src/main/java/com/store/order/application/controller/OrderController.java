@@ -1,6 +1,5 @@
 package com.store.order.application.controller;
 
-import com.store.order.adapter.out.messaging.OrderEventProducer;
 import com.store.order.application.service.OrderService;
 import com.store.order.domain.exceptions.OrderNotFoundException;
 import com.store.order.domain.model.Order;
@@ -20,16 +19,12 @@ import java.util.List;
 @Tag(name = "Pedidos", description = "API para gestionar pedidos")
 public class OrderController {
 
-	@Autowired
-	private OrderEventProducer producer;
-
     @Autowired
     private OrderService orderService;
 
     @Operation(summary = "Crear un nuevo pedido")
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
-    	this.producer.sendOrderMsg(order.toString());
         return orderService.createOrder(order);
     }
 
@@ -46,7 +41,7 @@ public class OrderController {
     @Operation(summary = "Listar todos los pedidos")
     @GetMapping
     public List<Order> getOrders() {
-    	this.producer.sendOrderMsg("Este mensaje es la prueba de kafka al retornar la lista de todos los orders");
+    	//this.producer.sendOrderMsg("Este mensaje es la prueba de kafka al retornar la lista de todos los orders");
         return orderService.getOrders();
     }
 
