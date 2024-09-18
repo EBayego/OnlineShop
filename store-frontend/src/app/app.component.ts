@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CartService } from './services/cart.service';
 
 @Component({
@@ -12,5 +12,15 @@ import { CartService } from './services/cart.service';
 export class AppComponent {
   title = 'store-frontend';
 
-  constructor(public cartService: CartService) { }
+  constructor(public cartService: CartService, private router: Router) { }
+
+  goToCart(): void {
+    this.router.navigate(['/cart']);
+  }
+
+  goToHome(): void {
+    this.router.navigate(['/']).then(() => {
+      window.location.reload();
+    });
+  }
 }

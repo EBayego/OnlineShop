@@ -1,5 +1,6 @@
 package com.store.product.application.service;
 
+import com.store.product.domain.exceptions.InsufficientStockException;
 import com.store.product.domain.exceptions.InvalidProductDataException;
 import com.store.product.domain.exceptions.ProductNotFoundException;
 import com.store.product.domain.model.Product;
@@ -31,6 +32,10 @@ public class ProductService {
     public List<Product> getProducts() {
         return productRepository.findAll();
     }
+    
+    public Product updateProduct(Product product) {
+        return productRepository.save(product);
+    }
 
     public Product updateProductInfo(String productId, String description, Double price, Integer stock) {
         Product product = productRepository.findById(productId)
@@ -46,5 +51,18 @@ public class ProductService {
             throw new ProductNotFoundException(id);
         }
         productRepository.deleteById(id);
+    }
+    
+    public void reduceStock(String productId, int quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        if (product.getStock() < quantity) {
+            throw new InsufficientStockException("No hay suficiente stock para el producto: " + product.getName());
+        }
+
+        // Reducir stock
+        product.setStock(product.getStock() - quantity);
+        productRepository.save(product);
     }
 }
